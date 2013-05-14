@@ -7,20 +7,18 @@ def main():
     parser = argparse.ArgumentParser(description='Score counter for zombie dice')
     parser.add_argument('-p', help='Names of all players', nargs='+')
     opts = parser.parse_args()
+    
     print "Start of game"
     players = [ Player(x) for x in opts.p]
     game = Game(players)
-    game.play()
+    winners = game.play()
+    
+    print
+    print
+    print "Winner%s: %s" % ("s"[len(winners)==1:], ', '.join([ x.name for x in winners ]))
     print "Final Scores:"
     [ x.printScore() for x in players ]
-    top_score = max( [ x.score for x in players ] )
-    winners = [ x for x in players if x.score == top_score ]
-    if len(winners) == 1:
-        print "The winner is %s" % each.name
-    else:
-        print "The winners are: "
-        for each in winners:
-            print each.name
+
             
 class Player:
     def __init__(self, name):
@@ -43,5 +41,6 @@ class Game:
     def play(self):
         for player in takewhile(lambda p: p.score < 13, cycle(self.players)):
             player.roll()
-
+        final =  max( [x.score for x in self.players ] )
+        return [ x for x in self.players if x.score == final ]
 main()
