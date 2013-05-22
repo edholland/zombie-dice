@@ -3,6 +3,7 @@
 import argparse
 import random
 from itertools import takewhile, cycle
+from termcolor import colored
 
 def main():
     """Main function
@@ -35,11 +36,11 @@ class Dice:
         self.runners = 2
         self.shotguns = 4 - self.brains
         if self.brains == 1:
-            self.colour = 'Red'
+            self.colour = 'red'
         elif self.brains == 2:
-            self.colour = 'Yellow'
+            self.colour = 'yellow'
         else:
-            self.colour = 'Green'
+            self.colour = 'green'
         self.result = ''
 
     def roll(self):
@@ -54,7 +55,7 @@ class Dice:
             self.result = 'runner'
         else:
             self.result = 'shotgun'
-        return self.result
+        return (self.result, self.colour)
         
 class Player:
     """Class to hold info about a player"""
@@ -98,15 +99,15 @@ class Player:
                 break
             self.current_dice = self.get_dice()
             for di in self.current_dice:
-                value = di.roll()
+                (value, colour) = di.roll()
                 if value == 'brain':
-                    print 'NOM BRAIN'
+                    print colored('NOM BRAIN', colour)
                     score += 1
                 elif value == 'shotgun':
-                    print 'OUCH'
+                    print colored('OUCH', colour)
                     self.shotguns += 1
                 elif value =='runner':
-                    print 'RUUUUUUN'
+                    print colored('RUUUUUUN', colour)
             self.current_dice = [ x for x in self.current_dice if x.result == 'runner' ]
         if self.shotguns < 3:
             self.score += score
