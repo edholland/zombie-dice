@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import random
 from itertools import takewhile, cycle
 
 def main():
@@ -19,20 +20,77 @@ def main():
     print "Final Scores:"
     [ x.printScore() for x in players ]
 
-            
+class Dice:
+    def __init__(self, brains):
+        self.brains = brains
+        self.runners = 2
+        self.shotguns = 4 - self.brains
+        if self.brains == 1:
+            self.colour = 'Red'
+        elif self.brains == 2:
+            self.colour = 'Yellow'
+        else:
+            self.colour = 'Green'
+        self.result = ''
+
+    def roll(self):
+        roll = random.randint(1,6)
+        if roll <= self.brains:
+            self.result =  'brain'
+        elif roll <= (self.brains + self.runners):
+            self.result = 'runner'
+        else:
+            self.result = 'shotgun'
+        return self.result
+        
 class Player:
     def __init__(self, name):
         self.name = name
         self.score = 0
+        self.shotguns = 0        
+        self.current_dice = []
+        self.newDice()
+    def newDice(self):
+        red_dice = [ Dice(1) for x in range(4) ]
+        yellow_dice = [ Dice(2) for x in range(5) ]
+        green_dice = [ Dice(3) for x in range(4) ]
+        self.dice = red_dice + yellow_dice + green_dice
+        random.shuffle(self.dice)
     def printScore(self):
         print "Player: %s \t Score: %s" % (self.name, self.score)
     def inputScore(self):
         self.score += int(raw_input("Enter score for %s: " % self.name))
         print
+    def get_dice(self):
+        temp = []
+        for i in  range(3-len(self.current_dice)):
+            try:
+                temp.append(self.dice.pop())
+            except IndexError:
+                break
+        return  self.current_dice + temp
     def roll(self):
-        self.inputScore()
-        self.printScore()
-        
+        self.shotguns = 0
+        score = 0
+        self.newDice()
+        while self.shotguns < 3:
+            if raw_input('Total score: %d. Current score: %d. Current shotguns: %d. Do you wish to continue: ' % (self.score + score, score, self.shotguns) ) != 'y':
+                break
+            self.current_dice = self.get_dice()
+            for di in self.current_dice:
+                value = di.roll()
+                if value == 'brain':
+                    print 'NOM BRAIN'
+                    score += 1
+                elif value == 'shotgun':
+                    print 'OUCH'
+                    self.shotguns += 1
+                elif value =='runner':
+                    print 'RUUUUUUN'
+            self.current_dice = [ x for x in self.current_dice if x.result == 'runner' ]
+        if self.shotguns < 3:
+            self.score += score
+        return self.score
 class Game:
     def __init__(self, players):
         self.players = players
@@ -40,6 +98,7 @@ class Game:
         self.done = False
     def play(self):
         for player in takewhile(lambda p: p.score < 13, cycle(self.players)):
+            player.printScore()
             player.roll()
         final =  max( [x.score for x in self.players ] )
         return [ x for x in self.players if x.score == final ]
