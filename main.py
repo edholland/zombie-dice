@@ -6,10 +6,7 @@ from itertools import takewhile, cycle
 from termcolor import colored
 
 def main():
-    """Main function
-    
-    Parses arguments, sets the game up and prints info about winner(s)
-    """
+    """Main function. Parses arguments, sets the game up and prints info about winner(s)"""
     parser = argparse.ArgumentParser(description='Score counter for zombie dice')
     parser.add_argument('-p', help='Names of all players', nargs='+')
     opts = parser.parse_args()
@@ -28,10 +25,7 @@ def main():
 class Dice:
     """ Implements a generic dice"""
     def __init__(self, brains):
-        """Sets up dice
-
-        Accepts number of positive results on dice
-        """
+        """Sets up dice. Accepts number of positive results on dice"""
         self.brains = brains
         self.runners = 2
         self.shotguns = 4 - self.brains
@@ -44,10 +38,7 @@ class Dice:
         self.result = ''
 
     def roll(self):
-        """Rolls a single dice
-
-        Returns a result based on the probabilites when object created
-        """
+        """Rolls a single dice. Returns a result based on the probabilites when object created"""
         roll = random.randint(1,6)
         if roll <= self.brains:
             self.result =  'brain'
