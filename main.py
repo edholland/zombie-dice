@@ -59,9 +59,9 @@ class Player:
         self.newDice()
     def newDice(self):
         """Produces a new set of dice"""
-        red_dice = [ Dice(1) for x in range(4) ]
-        yellow_dice = [ Dice(2) for x in range(5) ]
-        green_dice = [ Dice(3) for x in range(4) ]
+        red_dice = [ Dice(1) for x in range(3) ]
+        yellow_dice = [ Dice(2) for x in range(4) ]
+        green_dice = [ Dice(3) for x in range(6) ]
         self.dice = red_dice + yellow_dice + green_dice
         random.shuffle(self.dice)
     def printScore(self):
@@ -86,8 +86,6 @@ class Player:
         score = 0
         self.newDice()
         while self.shotguns < 3:
-            if raw_input('Total score: %d. Current score: %d. Current shotguns: %d. Do you wish to continue: ' % (self.score + score, score, self.shotguns) ) != 'y':
-                break
             self.current_dice = self.get_dice()
             for di in self.current_dice:
                 (value, colour) = di.roll()
@@ -100,9 +98,12 @@ class Player:
                 elif value =='runner':
                     print colored('RUUUUUUN', colour)
             self.current_dice = [ x for x in self.current_dice if x.result == 'runner' ]
+            if self.shotguns < 3:
+                if raw_input('Total score: %d. Current score: %d. Current shotguns: %d. Do you wish to continue: ' % (self.score + score, score, self.shotguns) ) != 'y':
+                    break
         if self.shotguns < 3:
             self.score += score
-        return self.score
+        return score
 
 class Game:
     """class to define a game"""
