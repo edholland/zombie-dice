@@ -66,7 +66,7 @@ class Player:
         random.shuffle(self.dice)
     def printScore(self):
         """prints player name and current score"""
-        print "Player: %s \t Score: %s" % (self.name, self.score)
+        print colored("Player: %s \t Score: %s" % (self.name, self.score), 'blue', 'on_red')
     def inputScore(self):
         """unused method to allow manual input of scores"""
         self.score += int(raw_input("Enter score for %s: " % self.name))
@@ -99,10 +99,12 @@ class Player:
                     print colored('RUUUUUUN', colour)
             self.current_dice = [ x for x in self.current_dice if x.result == 'runner' ]
             if self.shotguns < 3:
-                if raw_input('Total score: %d. Current score: %d. Current shotguns: %d. Do you wish to continue: ' % (self.score + score, score, self.shotguns) ) != 'y':
+                if raw_input(colored('Total score: %d. Current score: %d. Current shotguns: %d. Do you wish to continue: ' % (self.score + score, score, self.shotguns), 'white', 'on_blue') ) != 'y':
                     break
         if self.shotguns < 3:
             self.score += score
+        else:
+            score = 0
         return score
 
 class Game:
@@ -115,8 +117,10 @@ class Game:
     def play(self):
         """loops over all the players until one reaches 13 then loop once more over the remaining players"""
         for player in takewhile(lambda p: p.score < 13, cycle(self.players)):
+            print colored("Starting %s's Round" % player.name, 'blue', 'on_red')
             player.printScore()
-            player.roll()
+            score = player.roll()
+            print colored("Ending %s's Round with a score of %d. Giving a total score of %d" % (player.name, score, player.score), 'blue', 'on_red')
         final =  max( [x.score for x in self.players ] )
         return [ x for x in self.players if x.score == final ]
 main()
