@@ -16,10 +16,8 @@ def main():
     game = Game(players)
     winners = game.play()
     
-    print
-    print
-    print "Winner%s: %s" % ("s"[len(winners)==1:], ', '.join([ x.name for x in winners ]))
-    print "Final Scores:"
+    print colored("Winner%s: %s" % ("s"[len(winners)==1:], ', '.join([ x.name for x in winners ])), 'blue', 'on_red')
+    print colored("Final Scores:", 'blue', 'on_red')
     [ x.printScore() for x in players ]
 
 class Dice:
